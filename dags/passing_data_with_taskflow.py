@@ -30,9 +30,17 @@ def passing_data_with_taskflow_api():
 
         return order_price_data
 
+    @task
+    def compute_sum(order_price_data: dict):
 
-    @task(multiple_outputs=True)
-    def compute_total_and_average(order_price_data: dict):
+        total = 0
+        for order in order_price_data:
+            total += order_price_data[order] 
+
+        return total    
+
+    @task
+    def compute_average(order_price_data: dict):
 
         total = 0
         count = 0
@@ -42,7 +50,7 @@ def passing_data_with_taskflow_api():
 
         average = total / count
 
-        return {'total_price': total, 'average_price': average}
+        return average
 
 
     @task
@@ -51,14 +59,12 @@ def passing_data_with_taskflow_api():
         print("Total price of goods {total}".format(total=total))
         print("Average price of goods {average}".format(average=average))
 
-
     order_price_data = get_order_prices()
 
-    price_summary_data = compute_total_and_average(order_price_data)
+    total = compute_sum(order_price_data)
+    average = compute_average(order_price_data)
 
-    display_result(
-        price_summary_data['total_price'], 
-        price_summary_data['average_price'])
+    display_result(total, average)
 
 
 passing_data_with_taskflow_api()
