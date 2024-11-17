@@ -10,7 +10,7 @@ default_args = {
 
 
 
-@dag(dag_id='cross_task_communication_taskflow',
+@dag(dag_id='cross_task_communication_taskflow_mo',
      description = 'Xcom using the TaskFlow API',
      default_args = default_args,
      start_date = days_ago(1),
