@@ -6,7 +6,7 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 
 
 default_args = {
-   'owner': 'loonycorn'
+   'owner': 'airflow'
 }
 
 
@@ -15,8 +15,9 @@ with DAG(
     description = 'Executing a pipeline with a SQL sensor',
     default_args = default_args,
     start_date = days_ago(1),
-    schedule_interval='@once',
+    schedule="@continuous",
     catchup = False,
+    max_active_runs=1,
     tags = ['postgres', 'sensor', 'sql sensor']
 ) as dag:
 

@@ -5,7 +5,7 @@ from airflow.utils.dates import days_ago
 from airflow.decorators import dag, task
 
 default_args = {
-    'owner' : 'loonycorn'
+    'owner' : 'airflow'
 }
 
 

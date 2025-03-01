@@ -8,7 +8,7 @@ from airflow.operators.python import PythonOperator
 
 
 default_args = {
-    'owner' : 'loonycorn'
+    'owner' : 'airflow'
 }
 
 
@@ -24,7 +24,7 @@ def branching_using_taskflow():
 
     @task(task_id='read_csv_file_task')
     def read_csv_file():
-        df = pd.read_csv('/Users/loonycorn/airflow/datasets/car_data.csv')
+        df = pd.read_csv('/opt/airflow/datasets/car_data.csv')
 
         print(df)
 
@@ -76,7 +76,7 @@ def branching_using_taskflow():
         df = pd.read_json(json_data)
 
         df.to_csv(
-            '/Users/loonycorn/airflow/output/{0}.csv'.format(file_name), index=False)
+            '/opt/airflow/outputs/{0}.csv'.format(file_name), index=False)
 
 
     read_csv_file() >> determine_branch() >> [

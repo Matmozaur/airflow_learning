@@ -10,7 +10,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 
 default_args = {
-    'owner' : 'loonycorn'
+    'owner' : 'airflow'
 }
 
 def get_order_prices(**kwargs):

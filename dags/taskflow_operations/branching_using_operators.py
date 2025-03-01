@@ -8,7 +8,7 @@ from airflow.operators.python import PythonOperator, BranchPythonOperator
 
 
 default_args = {
-    'owner' : 'loonycorn'
+    'owner' : 'airflow'
 }
 
 
