@@ -1,6 +1,6 @@
 import time
+from datetime import datetime
 
-from airflow.utils.dates import days_ago
 from airflow.decorators import dag, task
 
 default_args = {
@@ -8,12 +8,14 @@ default_args = {
 }
 
 
-@dag(dag_id='dag_with_taskflow',
-     description='DAG using the TaskFlow API',
-     default_args=default_args,
-     start_date=days_ago(1),
-     schedule_interval='@once',
-     tags=['dependencies', 'python', 'taskflow_api'])
+@dag(
+    dag_id='dag_with_taskflow',
+    description='DAG using the TaskFlow API',
+    default_args=default_args,
+    start_date=datetime(2024, 1, 1),
+    schedule='@once',
+    tags=['dependencies', 'python', 'taskflow_api'],
+)
 def dag_with_taskflow_api():
     @task
     def task_a():

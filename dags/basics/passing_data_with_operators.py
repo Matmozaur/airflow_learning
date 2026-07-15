@@ -1,12 +1,7 @@
-import time
-
 import json
-
-from datetime import datetime, timedelta
-from airflow.utils.dates import days_ago
+from datetime import datetime
 
 from airflow import DAG
-
 from airflow.operators.python import PythonOperator
 
 default_args = {
@@ -76,17 +71,17 @@ def display_result(**kwargs):
         task_ids='compute_average', key='average_price')
 
 
-    print("Total price of goods {total}".format(total=total))
-    print("Average price of goods {average}".format(average=average))
+    print(f"Total price of goods {total}")
+    print(f"Average price of goods {average}")
 
 
 with DAG(
-    dag_id = 'cross_task_communication_operators',
-    description = 'XCom with operators',
-    default_args = default_args,
-    start_date = days_ago(1),
-    schedule_interval = '@once',
-    tags = ['xcom', 'python', 'operators']
+    dag_id='cross_task_communication_operators',
+    description='XCom with operators',
+    default_args=default_args,
+    start_date=datetime(2024, 1, 1),
+    schedule='@once',
+    tags=['xcom', 'python', 'operators'],
 ) as dag:
     get_order_prices = PythonOperator(
         task_id = 'get_order_prices',

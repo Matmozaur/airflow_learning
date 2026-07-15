@@ -1,7 +1,5 @@
-import time
+from datetime import datetime
 
-from datetime import datetime, timedelta
-from airflow.utils.dates import days_ago
 from airflow.decorators import dag, task
 
 default_args = {
@@ -10,12 +8,14 @@ default_args = {
 
 
 
-@dag(dag_id='cross_task_communication_taskflow',
-     description = 'Xcom using the TaskFlow API',
-     default_args = default_args,
-     start_date = days_ago(1),
-     schedule_interval = '@once',
-     tags = ['xcom', 'python', 'taskflow_api'])
+@dag(
+    dag_id='cross_task_communication_taskflow',
+    description='XCom using the TaskFlow API',
+    default_args=default_args,
+    start_date=datetime(2024, 1, 1),
+    schedule='@once',
+    tags=['xcom', 'python', 'taskflow_api'],
+)
 def passing_data_with_taskflow_api():
 
     @task
@@ -56,8 +56,8 @@ def passing_data_with_taskflow_api():
     @task
     def display_result(total, average):
 
-        print("Total price of goods {total}".format(total=total))
-        print("Average price of goods {average}".format(average=average))
+        print(f"Total price of goods {total}")
+        print(f"Average price of goods {average}")
 
     order_price_data = get_order_prices()
 
