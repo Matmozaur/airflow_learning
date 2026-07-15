@@ -1,6 +1,5 @@
 import pandas as pd
-
-from airflow.utils.dates import days_ago
+from datetime import datetime
 
 from airflow.models import Variable
 from airflow.decorators import dag, task
@@ -14,11 +13,11 @@ default_args = {
 
 @dag(
     dag_id='branching_using_taskflow',
-    description = 'Branching using taskflow',
-    default_args = default_args,
-    start_date = days_ago(1),
-    schedule_interval = '@once',
-    tags = ['branching', 'python', 'taskflow']
+    description='Branching using taskflow',
+    default_args=default_args,
+    start_date=datetime(2024, 1, 1),
+    schedule='@once',
+    tags=['branching', 'python', 'taskflow'],
 )
 def branching_using_taskflow():
 
@@ -76,7 +75,7 @@ def branching_using_taskflow():
         df = pd.read_json(json_data)
 
         df.to_csv(
-            '/opt/airflow/outputs/{0}.csv'.format(file_name), index=False)
+            f'/opt/airflow/outputs/{file_name}.csv', index=False)
 
 
     read_csv_file() >> determine_branch() >> [

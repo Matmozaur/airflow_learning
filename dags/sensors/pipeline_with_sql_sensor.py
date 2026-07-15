@@ -1,8 +1,8 @@
+from datetime import datetime
+
 from airflow import DAG
-from airflow.utils.dates import days_ago
-from airflow.operators.python import PythonOperator
-from airflow.sensors.sql_sensor import SqlSensor
-from airflow.providers.postgres.operators.postgres import PostgresOperator
+from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
+from airflow.providers.common.sql.sensors.sql import SqlSensor
 
 
 default_args = {
@@ -11,20 +11,20 @@ default_args = {
 
 
 with DAG(
-    dag_id = 'pipeline_with_sql_sensor',
-    description = 'Executing a pipeline with a SQL sensor',
-    default_args = default_args,
-    start_date = days_ago(1),
-    schedule="@continuous",
-    catchup = False,
+    dag_id='pipeline_with_sql_sensor',
+    description='Executing a pipeline with a SQL sensor',
+    default_args=default_args,
+    start_date=datetime(2024, 1, 1),
+    schedule='@continuous',
+    catchup=False,
     max_active_runs=1,
-    tags = ['postgres', 'sensor', 'sql sensor']
+    tags=['postgres', 'sensor', 'sql sensor'],
 ) as dag:
 
-    create_laptops_table = PostgresOperator(
-        task_id = 'create_laptops_table',
-        postgres_conn_id = 'postgres_connection_laptop_db',
-        sql = """
+    create_laptops_table = SQLExecuteQueryOperator(
+        task_id='create_laptops_table',
+        conn_id='postgres_connection_laptop_db',
+        sql="""
             CREATE TABLE IF NOT EXISTS laptops (
                 id SERIAL PRIMARY KEY,
                 company VARCHAR(255),
@@ -32,13 +32,13 @@ with DAG(
                 type_name VARCHAR(255),
                 price_euros NUMERIC(10, 2)
             );
-        """
+        """,
     )
 
-    create_premium_laptops_table = PostgresOperator(
-        task_id = 'create_premium_laptops_table',
-        postgres_conn_id = 'postgres_connection_laptop_db',
-        sql = """
+    create_premium_laptops_table = SQLExecuteQueryOperator(
+        task_id='create_premium_laptops_table',
+        conn_id='postgres_connection_laptop_db',
+        sql="""
             CREATE TABLE IF NOT EXISTS premium_laptops (
                 id SERIAL PRIMARY KEY,
                 company VARCHAR(255),
@@ -46,7 +46,7 @@ with DAG(
                 type_name VARCHAR(255),
                 price_euros NUMERIC(10, 2)
             );
-        """
+        """,
     )
 
     wait_for_premium_laptops = SqlSensor(
@@ -57,17 +57,16 @@ with DAG(
         timeout=10 * 60
     )
 
-    insert_data_into_premium_laptops_table = PostgresOperator(
-        task_id = 'insert_data_into_premium_laptops_table',
-        postgres_conn_id='postgres_connection_laptop_db',
-        sql="""INSERT INTO premium_laptops 
-               SELECT * FROM laptops WHERE price_euros > 500"""
+    insert_data_into_premium_laptops_table = SQLExecuteQueryOperator(
+        task_id='insert_data_into_premium_laptops_table',
+        conn_id='postgres_connection_laptop_db',
+        sql="INSERT INTO premium_laptops SELECT * FROM laptops WHERE price_euros > 500",
     )
 
-    delete_laptop_data = PostgresOperator(
+    delete_laptop_data = SQLExecuteQueryOperator(
         task_id='delete_laptop_data',
-        postgres_conn_id='postgres_connection_laptop_db',
-        sql="DELETE FROM laptops"
+        conn_id='postgres_connection_laptop_db',
+        sql="DELETE FROM laptops",
     )
 
 

@@ -1,10 +1,6 @@
-from datetime import datetime, timedelta
-from airflow.utils.dates import days_ago
-import pandas as pd
+from datetime import datetime
 
 from airflow import DAG
-
-from airflow.operators.python import PythonOperator
 from airflow.sensors.filesystem import FileSensor
 
 
@@ -13,12 +9,12 @@ default_args = {
 }
 
 with DAG(
-    dag_id = 'simple_file_sensor',
-    description = 'Running a simple file sensor',
-    default_args = default_args,
-    start_date = days_ago(1),
-    schedule_interval = '@once',
-    tags = ['python', 'sensor', 'file sensor'],
+    dag_id='simple_file_sensor',
+    description='Running a simple file sensor',
+    default_args=default_args,
+    start_date=datetime(2024, 1, 1),
+    schedule='@once',
+    tags=['python', 'sensor', 'file sensor'],
 ) as dag:
 
     checking_for_file = FileSensor(

@@ -1,6 +1,5 @@
 import pandas as pd
-
-from airflow.utils.dates import days_ago
+from datetime import datetime
 
 from airflow.models import Variable
 from airflow import DAG
@@ -58,17 +57,17 @@ def write_csv_result(ti):
 
     df = pd.read_json(json_data)
 
-    df.to_csv('/opt/airflow/outputs/{0}.csv'.format(file_name), index=False)
+    df.to_csv(f'/opt/airflow/outputs/{file_name}.csv', index=False)
 
 
 
 with DAG(
-    dag_id = 'branching_using_operators',
-    description = 'Branching using operators',
-    default_args = default_args,
-    start_date = days_ago(1),
-    schedule_interval = '@once',
-    tags = ['branching', 'python', 'operators']
+    dag_id='branching_using_operators',
+    description='Branching using operators',
+    default_args=default_args,
+    start_date=datetime(2024, 1, 1),
+    schedule='@once',
+    tags=['branching', 'python', 'operators'],
 ) as dag:
     read_csv_file_task = PythonOperator(
         task_id = 'read_csv_file_task',
